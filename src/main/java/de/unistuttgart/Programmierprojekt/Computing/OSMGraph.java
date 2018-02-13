@@ -18,8 +18,8 @@ public class OSMGraph {
     private String[] nodeId;
     private int[] srcNodes;
     private int[] trgtNodes;
-    private float[] lat;
-    private float[] lon;
+    private double[] lat;
+    private double[] lon;
     private int[] cost;
     private int[] offset;
 
@@ -42,9 +42,8 @@ public class OSMGraph {
         //load number of edges
         noEdges = Integer.parseInt(br.readLine());
         //initialize arrays
-        nodeId = new String[noNodes];
-        lat = new float[noNodes];
-        lon = new float[noNodes];
+        lat = new double[noNodes];
+        lon = new double[noNodes];
         trgtNodes = new int[noEdges];
         cost = new int[noEdges];
         srcNodes = new int[noEdges];
@@ -53,9 +52,8 @@ public class OSMGraph {
         for(int i = 0; i<noNodes; i++){
             String line = br.readLine();
             String[] values = line.split(" ");
-            nodeId[i] = values[1];
-            lat[i] = Float.parseFloat(values[2]);
-            lon[i] = Float.parseFloat(values[3]);
+            lat[i] = Double.parseDouble(values[2]);
+            lon[i] = Double.parseDouble(values[3]);
             if(i%100000==0)
             template.convertAndSend("/topic/graphStatus", "Loading nodes: " + i + "/" + (noNodes-1));
         }
@@ -114,6 +112,19 @@ public class OSMGraph {
         }
     }
 
+    public int getClosestNode(double lat, double lon){
+        double d = Double.MAX_VALUE;
+        int closestNode = 0;
+        for (int i = 0; i<getNoNodes(); i++){
+            double dI = Math.sqrt(Math.pow(lat-getLat()[i], 2) + Math.pow(lon-getLon()[i], 2));
+            if(dI<d){
+                d = dI;
+                closestNode = i;
+            }
+        }
+        return closestNode;
+    }
+
     public int getNoNodes() {
         return noNodes;
     }
@@ -144,5 +155,13 @@ public class OSMGraph {
 
     public boolean isGraphLoaded() {
         return graphLoaded;
+    }
+
+    public double[] getLat() {
+        return lat;
+    }
+
+    public double[] getLon() {
+        return lon;
     }
 }

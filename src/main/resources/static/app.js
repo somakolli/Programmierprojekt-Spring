@@ -51,10 +51,19 @@ function getDistance(){
     })
 }
 
+function getClosestNode() {
+    var lon = $("#lon").val();
+    var lat = $("#lat").val();
+    $.get("closestNode", {lon: lon, lat: lat}, function(data){
+        $("#distance-form").append("<p>Closest node from (" + lon + "," + lat + "): " + data + "</p>");
+    });
+}
+
 $(function () {
     checkGraphStatus();
     $("form").on('submit', function (e) {
         e.preventDefault();
     });
     $( "#getDistance" ).click(function() { getDistance(); });
+    $("#getClosestNode").click(function(){ getClosestNode();});
 });
