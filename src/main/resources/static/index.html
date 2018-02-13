@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello WebSocket</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/app.js"></script>
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Please enable
+    Javascript and reload this page!</h2></noscript>
+<div id="main-content" class="container">
+    <div id="loading">
+        <div id="loader" class="loader"></div>
+        <br>
+        Loading Graph!
+    </div>
+    <div class="col-md-6" id="distance-form" hidden>
+        <form class="form-inline">
+            <div class="form-group">
+                <input type="number" id="src" class="form-control" placeholder="Source Node">
+                <input type="number" id="trgt" class="form-control" placeholder="Target Node">
+                <button id="getDistance" class="btn btn-default" type="submit">Get Distance</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
