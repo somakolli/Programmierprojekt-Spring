@@ -32,6 +32,8 @@ public class OSMGraph {
     }
 
     public void loadFromFile(String path) throws Exception{
+        int messageRate = 1000000;
+
         FileReader fr = new FileReader(path);
         BufferedReader br = new BufferedReader(fr);
         //ignore first 5 lines
@@ -55,7 +57,7 @@ public class OSMGraph {
             String[] values = line.split(" ");
             lat[i] = Double.parseDouble(values[2]);
             lon[i] = Double.parseDouble(values[3]);
-            if(i%100000==0)
+            if(i%messageRate==0)
             template.convertAndSend("/topic/graphStatus", "Loading nodes: " + i + "/" + (noNodes-1));
         }
 
@@ -82,7 +84,7 @@ public class OSMGraph {
                 }
             }
             o++;
-            if(i%100000==0)
+            if(i%messageRate==0)
             template.convertAndSend("/topic/graphStatus", "Loading Edges: " + i + "/" + (noEdges-1));
         }
         offset[noNodes] = o;
