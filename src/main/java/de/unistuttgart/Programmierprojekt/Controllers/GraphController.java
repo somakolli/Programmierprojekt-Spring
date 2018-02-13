@@ -1,6 +1,7 @@
 package de.unistuttgart.Programmierprojekt.Controllers;
 
 import de.unistuttgart.Programmierprojekt.Computing.OSMGraph;
+import de.unistuttgart.Programmierprojekt.Models.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -23,7 +24,7 @@ public class GraphController {
         return osmGraph.isGraphLoaded();
     }
     @RequestMapping("closestNode")
-    public int closestNode(@RequestParam double lat, @RequestParam double lon) throws Exception {
+    public Node closestNode(@RequestParam double lat, @RequestParam double lon) throws Exception {
         return osmGraph.getClosestNode(lat, lon);
     }
 }

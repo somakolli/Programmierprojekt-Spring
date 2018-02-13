@@ -2,8 +2,14 @@
 <html>
 <head>
     <title>Programmierprojekt</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+          integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+          crossorigin=""/>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/style.css" rel="stylesheet">
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+            integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+            crossorigin=""></script>
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
@@ -12,13 +18,13 @@
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Please enable
     Javascript and reload this page!</h2></noscript>
-<div id="main-content" class="container">
-    <div id="loading">
-        <div id="loader" class="loader"></div>
-        <br>
-        <p id="graphStatus">1</p>
-    </div>
-    <div class="col-md-6" id="distance-form" hidden>
+<div id="loading">
+    <div id="loader" class="loader"></div>
+    <br>
+    <p id="graphStatus">1</p>
+</div>
+<div id="main-content" class="container" hidden>
+    <div class="col-md-6" id="distance-form">
         <form class="form-inline">
             <div class="form-group">
                 <input type="number" id="src" class="form-control" placeholder="Source Node">
@@ -28,10 +34,17 @@
         </form>
         <form class="form-inline">
             <div class="form-group">
-                <input type="number" id="lat" class="form-control" placeholder="Latitude">
-                <input type="number" id="lon" class="form-control" placeholder="Longitude">
+                <input type="number" step="0.00000000000000001" id="lat" class="form-control" placeholder="Latitude">
+                <input type="number" step="0.00000000000000001" id="lon" class="form-control" placeholder="Longitude">
                 <button id="getClosestNode" class="btn btn-default" type="submit">Get Closest Node</button>
             </div>
+        </form>
+        <br>
+        <div id="mapid" class="map"></div>
+        <form id="sourceTargetForm">
+            <input id="srcRadio" type="radio" name="gender" value="src" checked> <label id="srcLabel">Source</label><br>
+            <input id="trgtRadio" type="radio" name="gender" value="trgt"> <label id="trgtLabel">Target</label><br>
+            <button id="drawRoute" class="btn btn-default" type="submit">Calculate Route</button>
         </form>
     </div>
 

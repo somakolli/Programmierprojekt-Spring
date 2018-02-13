@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+
 @RestController
 public class DijkstraController {
 
@@ -25,8 +27,8 @@ public class DijkstraController {
         return dijkstra.shortestPath(src, trgt);
     }
     @RequestMapping("/path")
-    public String path(@RequestParam int src, @RequestParam int trgt) throws Exception{
+    public double[][] path(@RequestParam int src, @RequestParam int trgt) throws Exception{
         if(!osmGraph.isGraphLoaded()) throw new Exception();
-        return dijkstra.getPath(src, trgt);
+        return osmGraph.nodePathToCoordinatePath(dijkstra.getPath(src, trgt));
     }
 }

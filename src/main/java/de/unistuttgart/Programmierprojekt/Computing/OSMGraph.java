@@ -1,5 +1,6 @@
 package de.unistuttgart.Programmierprojekt.Computing;
 
+import de.unistuttgart.Programmierprojekt.Models.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -112,7 +113,7 @@ public class OSMGraph {
         }
     }
 
-    public int getClosestNode(double lat, double lon){
+    public Node getClosestNode(double lat, double lon){
         double d = Double.MAX_VALUE;
         int closestNode = 0;
         for (int i = 0; i<getNoNodes(); i++){
@@ -122,8 +123,19 @@ public class OSMGraph {
                 closestNode = i;
             }
         }
-        return closestNode;
+        return new Node(closestNode, this.lon[closestNode], this.lat[closestNode]);
     }
+
+
+    public double[][] nodePathToCoordinatePath(Integer[] path) {
+        double[][] coPath = new double[path.length][2];
+        for (int i = 0; i < path.length; i++) {
+            coPath[i][1] = getLat()[path[i]];
+            coPath[i][0] = getLon()[path[i]];
+        }
+        return coPath;
+    }
+
 
     public int getNoNodes() {
         return noNodes;

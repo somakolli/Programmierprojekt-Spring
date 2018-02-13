@@ -72,7 +72,8 @@ public class Dijkstra {
      * @param sourceNode , the starting point
      * @param targetNode , the goal Point
      */
-    public String getPath(int sourceNode, int targetNode) {
+    public Integer[] getPath(int sourceNode, int targetNode) {
+        ArrayList<Integer> path = new ArrayList<>();
         if(sourceNode!=this.srcNode){
             shortestPath(sourceNode, targetNode);
         }
@@ -80,19 +81,18 @@ public class Dijkstra {
             shortestPath(sourceNode, targetNode);
         }
         if(cost[targetNode]==Integer.MAX_VALUE){
-            return "No Path";
+            return new Integer[0];
         }
-        String path = "";
         int currentNode = (int) targetNode;
-        path += currentNode + ";";
-        StringBuilder pathBuilder = new StringBuilder(path);
+        path.add(currentNode);
         while(currentNode!=sourceNode) {
-            pathBuilder.append(previousNode[currentNode]).append(";");
+            path.add(previousNode[currentNode]);
             currentNode = previousNode[currentNode];
         }
-        path = pathBuilder.toString();
-        return path;
+        return path.toArray(new Integer[path.size()]);
     }
+
+
 
 
 }
