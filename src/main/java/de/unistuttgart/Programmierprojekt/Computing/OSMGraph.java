@@ -56,6 +56,8 @@ public class OSMGraph {
             nodeId[i] = values[1];
             lat[i] = Float.parseFloat(values[2]);
             lon[i] = Float.parseFloat(values[3]);
+            if(i%100000==0)
+            template.convertAndSend("/topic/graphStatus", "Loading nodes: " + i + "/" + (noNodes-1));
         }
 
         //offset variables
@@ -81,6 +83,8 @@ public class OSMGraph {
                 }
             }
             o++;
+            if(i%100000==0)
+            template.convertAndSend("/topic/graphStatus", "Loading Edges: " + i + "/" + (noEdges-1));
         }
         offset[noNodes] = o;
 

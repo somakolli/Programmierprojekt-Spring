@@ -6,9 +6,14 @@ function connect() {
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/graphStatus', function (graphStatus) {
-            switchView();
-            disconnect();
+        stompClient.subscribe('/topic/graphStatus', function (graphStatus){
+            if(graphStatus.body==="true"){
+                switchView();
+                disconnect();
+            }
+            else{
+                $("#graphStatus").text(graphStatus.body);
+            }
         });
     });
 }

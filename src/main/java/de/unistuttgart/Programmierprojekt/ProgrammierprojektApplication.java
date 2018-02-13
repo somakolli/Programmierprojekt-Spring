@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ProgrammierprojektApplication {
 	public static void main(String[] args) throws Exception {
 		ConfigurableApplicationContext context = SpringApplication.run(ProgrammierprojektApplication.class, args);
-		context.getBean(OSMGraph.class).loadFromFile("src/main/resources/toy.fmi");
+		context.getBean(OSMGraph.class).loadFromFile("src/main/resources/germany.fmi");
 		context.getBean(Dijkstra.class).init(context.getBean(OSMGraph.class));
 	}
 }
