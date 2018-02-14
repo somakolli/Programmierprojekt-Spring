@@ -2,8 +2,12 @@ var stompClient = null;
 var mymap = null;
 var src = null;
 var trgt = null;
+var srcMarker = null;
+var trgtMarker = null;
+var path = null;
 
-function connect() {
+//subscribe to get messages about the loading status of the graph
+function subscribeToGraphStatus() {
     var socket = new SockJS('/pp-websocket');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
@@ -20,17 +24,19 @@ function connect() {
     });
 }
 
+//switch view if the graph is loaded
 function switchView() {
     $("#loading").hide();
     $("#main-content").show();
 }
 
+//if the graph is already loaded switch the view else
 function checkGraphStatus() {
     $.get("graphStatus", function (graphStatus) {
         if(graphStatus){
             switchView();
         }else{
-            connect();
+            subscribeToGraphStatus();
         }
     })
 }
@@ -62,57 +68,76 @@ function getClosestNode() {
 }
 
 
-
+//handles the mapclick event
+//if the source radio button is selected it changes the source
+//if the target radio button ist selected it changes the target
 function onMapClick(e) {
     var lon = e.latlng.lng;
     var lat = e.latlng.lat;
     $.get("closestNode", {lon: lon, lat: lat}, function(data){
         if($("#srcRadio").is(":checked")){
-            L.marker([data.lat, data.lon]).addTo(mymap)
-                .bindPopup('Source')
+            if(srcMarker!==null){
+                mymap.removeLayer(srcMarker);
+            }
+            srcMarker = new L.Marker([data.lat, data.lon]);
+            mymap.addLayer(srcMarker);
+            srcMarker.bindPopup('Source')
                 .openPopup();
             src = data.id;
-            $("#srcLabel").html("Source: " +  data.id);
+            $("#srcLabel").html('Source(id:' + data.id + ';Lat:' + data.lat + ';Lon: ' + data.lon + ')');
         }else{
-            L.marker([data.lat, data.lon]).addTo(mymap)
-                .bindPopup('Target')
+            if(trgtMarker!==null){
+                mymap.removeLayer(trgtMarker);
+            }
+            trgtMarker = new L.Marker([data.lat, data.lon],{color: 'green'});
+            mymap.addLayer(trgtMarker);
+            trgtMarker.bindPopup('Target')
                 .openPopup();
-            $("#trgtLabel").html("Target: " + data.id);
+            $("#trgtLabel").html('Target(id:' + data.id + ';Lat:' + data.lat + ';Lon: ' + data.lon + ')');
             trgt = data.id;
         }
     });
 }
 
+//requests the route given a source and a target and draws it
 function drawRoute() {
+    //remove already drawn path
+    if(path!==null) mymap.removeLayer(path);
     var line = null;
+    //http get request to '/path?src={src}&trgt={trgt}' returns array with coordinates
     $.get("path", {src: src, trgt: trgt}, function(data){
+        //geoJSON line
         line = {
             "type": "LineString",
-            "coordinates": data
+            "coordinates": data.path
         };
-
         var myStyle = {
             "color": "#ff7800",
             "weight": 5,
             "opacity": 0.65
         };
-        L.geoJSON(line, {
+        path = L.geoJSON(line, {
             style: myStyle
-        }).addTo(mymap);
+        });
+        path.addTo(mymap);
+        trgtMarker.bindPopup('Distance: ' + data.distance)
+            .openPopup();
     });
+}
+
+function showDistance() {
 
 }
 
+//'Main' function
 $(function () {
-    checkGraphStatus();
     $("form").on('submit', function (e) {
         e.preventDefault();
     });
-    $( "#getDistance" ).click(function() { getDistance(); });
-    $("#getClosestNode").click(function(){ getClosestNode();});
-    $("#drawRoute").click(function(){drawRoute();});
 
-    mymap = L.map('mapid').setView([51.505, -0.09], 13);
+    checkGraphStatus();
+
+    mymap = L.map('mapid').setView([50.708,9.799], 6);
 
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -120,6 +145,13 @@ $(function () {
         id: 'mapbox.streets',
         accessToken: 'pk.eyJ1IjoicDRjaDFuMCIsImEiOiJjamRtMzN0Mm4wYWkwMnFucHE2bTFtZnh0In0.RQcP1SPjgfYAbir206CWmg'
     }).addTo(mymap);
+
+
+    $( "#getDistance" ).click(function() { getDistance(); });
+    $("#getClosestNode").click(function(){ getClosestNode();});
+    $("#drawRoute").click(function(){ drawRoute(); showDistance();});
+
+
     mymap.on('click', onMapClick);
     $('#setSource').click(function(){setSource();});
 });

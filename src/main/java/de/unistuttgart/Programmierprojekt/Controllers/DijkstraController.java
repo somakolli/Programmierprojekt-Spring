@@ -2,12 +2,11 @@ package de.unistuttgart.Programmierprojekt.Controllers;
 
 import de.unistuttgart.Programmierprojekt.Computing.Dijkstra;
 import de.unistuttgart.Programmierprojekt.Computing.OSMGraph;
+import de.unistuttgart.Programmierprojekt.Models.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
 
 @RestController
 public class DijkstraController {
@@ -24,11 +23,14 @@ public class DijkstraController {
     @RequestMapping("/distance")
     public int distance(@RequestParam int src, @RequestParam int trgt) throws Exception{
         if(!osmGraph.isGraphLoaded()) throw new Exception();
-        return dijkstra.shortestPath(src, trgt);
+        return dijkstra.shortestDistance(src, trgt);
     }
     @RequestMapping("/path")
-    public double[][] path(@RequestParam int src, @RequestParam int trgt) throws Exception{
+    public Route path(@RequestParam int src, @RequestParam int trgt) throws Exception{
         if(!osmGraph.isGraphLoaded()) throw new Exception();
-        return osmGraph.nodePathToCoordinatePath(dijkstra.getPath(src, trgt));
+        int distance = dijkstra.shortestDistance(src, trgt);
+        double[][] path = osmGraph.nodePathToCoordinatePath(dijkstra.getPath(src, trgt));
+        Route route = new Route(path, distance);
+        return route;
     }
 }

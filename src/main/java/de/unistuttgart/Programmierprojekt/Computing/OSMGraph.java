@@ -128,7 +128,7 @@ public class OSMGraph {
         return new Node(closestNode, this.lon[closestNode], this.lat[closestNode]);
     }
 
-
+    //turns an array with ids to a path with coordinates
     public double[][] nodePathToCoordinatePath(Integer[] path) {
         double[][] coPath = new double[path.length][2];
         for (int i = 0; i < path.length; i++) {

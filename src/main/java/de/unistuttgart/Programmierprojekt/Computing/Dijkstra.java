@@ -26,15 +26,15 @@ public class Dijkstra {
         this.srcNode = -1;
     }
 
-    public void shortestPath(int src){
+    public void shortestDistance(int src){
         try {
-            shortestPath(src, -1);
+            shortestDistance(src, -1);
         }catch (IndexOutOfBoundsException e){
 
         }
     }
 
-    public int shortestPath(int src, int trgt) {
+    public int shortestDistance(int src, int trgt) {
         if(trgt!=-1 && this.srcNode==src && visited[trgt]){
             return cost[trgt];
         }else{
@@ -75,10 +75,10 @@ public class Dijkstra {
     public Integer[] getPath(int sourceNode, int targetNode) {
         ArrayList<Integer> path = new ArrayList<>();
         if(sourceNode!=this.srcNode){
-            shortestPath(sourceNode, targetNode);
+            shortestDistance(sourceNode, targetNode);
         }
         if(!visited[targetNode]){
-            shortestPath(sourceNode, targetNode);
+            shortestDistance(sourceNode, targetNode);
         }
         if(cost[targetNode]==Integer.MAX_VALUE){
             return new Integer[0];
@@ -91,8 +91,4 @@ public class Dijkstra {
         }
         return path.toArray(new Integer[path.size()]);
     }
-
-
-
-
 }
