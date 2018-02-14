@@ -122,6 +122,10 @@ function drawRoute() {
         path.addTo(mymap);
         trgtMarker.bindPopup('Distance: ' + data.distance)
             .openPopup();
+        if(data.path === []){
+            trgtMarker.bindPopup('No Path')
+                .openPopup();
+        }
     });
 }
 
