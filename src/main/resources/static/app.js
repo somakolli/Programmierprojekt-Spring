@@ -28,6 +28,7 @@ function subscribeToGraphStatus() {
 function switchView() {
     $("#loading").hide();
     $("#main-content").show();
+    setTimeout(function(){ mymap.invalidateSize()}, 400);
 }
 
 //if the graph is already loaded switch the view else
@@ -75,6 +76,7 @@ function onMapClick(e) {
     var lon = e.latlng.lng;
     var lat = e.latlng.lat;
     $.get("closestNode", {lon: lon, lat: lat}, function(data){
+        if(path!==null) mymap.removeLayer(path);
         if($("#srcRadio").is(":checked")){
             if(srcMarker!==null){
                 mymap.removeLayer(srcMarker);
@@ -122,7 +124,7 @@ function drawRoute() {
         path.addTo(mymap);
         trgtMarker.bindPopup('Distance: ' + data.distance)
             .openPopup();
-        if(data.path === []){
+        if(data.path[0] === null){
             trgtMarker.bindPopup('No Path')
                 .openPopup();
         }

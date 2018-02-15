@@ -30,7 +30,6 @@ public class DijkstraController {
         if(!osmGraph.isGraphLoaded()) throw new Exception();
         int distance = dijkstra.shortestDistance(src, trgt);
         double[][] path = osmGraph.nodePathToCoordinatePath(dijkstra.getPath(src, trgt));
-        Route route = new Route(path, distance);
-        return route;
+        return new Route(path, distance);
     }
 }

@@ -29,7 +29,7 @@ public class Dijkstra {
     public void shortestDistance(int src){
         try {
             shortestDistance(src, -1);
-        }catch (IndexOutOfBoundsException e){
+        }catch (IndexOutOfBoundsException ignored){
 
         }
     }
