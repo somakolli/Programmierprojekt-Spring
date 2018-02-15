@@ -149,7 +149,7 @@ $(function () {
         id: 'mapbox.streets',
         accessToken: 'pk.eyJ1IjoicDRjaDFuMCIsImEiOiJjamRtMzN0Mm4wYWkwMnFucHE2bTFtZnh0In0.RQcP1SPjgfYAbir206CWmg'
     }).addTo(mymap);
-
+    setTimeout(function(){ mymap.invalidateSize()}, 400);
 
     $( "#getDistance" ).click(function() { getDistance(); });
     $("#getClosestNode").click(function(){ getClosestNode();});
