@@ -24,4 +24,9 @@ public class GraphController {
     public Node closestNode(@RequestParam double lat, @RequestParam double lon) throws Exception {
         return osmGraph.getClosestNode(lat, lon);
     }
+
+    @RequestMapping("coordinates")
+    public double[][] coordinatesFromId(@RequestParam Integer[] ids){
+        return osmGraph.idsToCoordinates(ids);
+    }
 }

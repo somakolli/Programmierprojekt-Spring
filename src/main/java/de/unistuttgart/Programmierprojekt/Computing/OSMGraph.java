@@ -129,14 +129,21 @@ public class OSMGraph {
     }
 
     //turns an array with ids to a path with coordinates
-    public double[][] nodePathToCoordinatePath(Integer[] path) {
+    public double[][] idsToCoordinates(Integer[] path) {
         double[][] coPath = new double[path.length][2];
         for (int i = 0; i < path.length; i++) {
-            coPath[i][1] = getLat()[path[i]];
-            coPath[i][0] = getLon()[path[i]];
+            coPath[i] = getCoordinatesFromId(path[i]);
         }
         return coPath;
     }
+
+    public double[] getCoordinatesFromId(int id){
+        double[] coordinates = new double[2];
+        coordinates[0] = getLon()[id];
+        coordinates[1] = getLat()[id];
+        return coordinates;
+    }
+
 
 
     public int getNoNodes() {

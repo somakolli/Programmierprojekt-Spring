@@ -6,6 +6,32 @@ var srcMarker = null;
 var trgtMarker = null;
 var path = null;
 
+
+function setSource(id, lat, lon) {
+    if(srcMarker!==null){
+        mymap.removeLayer(srcMarker);
+    }
+    srcMarker = new L.Marker([lat, lon]);
+    mymap.addLayer(srcMarker);
+    srcMarker.bindPopup('Source')
+        .openPopup();
+    src = id;
+    $("#srcLabel").html('Source(id:' + id + ';lat: ' + lat + ';lon: ' + lon + ')');
+}
+function setTarget(id, lat, lon) {
+    if(trgtMarker!==null){
+        mymap.removeLayer(srcMarker);
+    }
+    trgtMarker = new L.Marker([lat, lon]);
+    mymap.addLayer(trgtMarker);
+    trgtMarker.bindPopup('Target')
+        .openPopup();
+    trgt = id;
+    $("#trgtLabel").html('Target(id:' + id + ';lat: ' + lat + ';lon: ' + lon + ')');
+}
+
+
+
 //subscribe to get messages about the loading status of the graph
 function subscribeToGraphStatus() {
     var socket = new SockJS('/pp-websocket');
@@ -50,14 +76,15 @@ function disconnect() {
 }
 
 function getDistance(){
-    var src = $("#src").val();
-    var trgt = $("#trgt").val();
-    $.get("distance", {src: src, trgt: trgt}, function(data){
-        $("#distance-form").append("<p>Distance from " + src + " to " + trgt + ": " + data + "</p>");
-        $.get("path", {src: src, trgt: trgt}, function(data){
-            $("#distance-form").append("<p>Path from " + src + " to " + trgt + ": " + data + "</p>");
-        })
-    })
+    var src = parseInt($("#src").val());
+    var trgt = parseInt($("#trgt").val());
+    var ids = [src, trgt];
+
+    $.get("coordinates?ids=" + src + "&" + "ids=" + trgt, function(data){
+        setSource(src, data[0][1], data[0][0]);
+        setTarget(trgt, data[1][1], data[1][0]);
+        drawRoute();
+    });
 }
 
 function getClosestNode() {
@@ -78,25 +105,9 @@ function onMapClick(e) {
     $.get("closestNode", {lon: lon, lat: lat}, function(data){
         if(path!==null) mymap.removeLayer(path);
         if($("#srcRadio").is(":checked")){
-            if(srcMarker!==null){
-                mymap.removeLayer(srcMarker);
-            }
-            srcMarker = new L.Marker([data.lat, data.lon]);
-            mymap.addLayer(srcMarker);
-            srcMarker.bindPopup('Source')
-                .openPopup();
-            src = data.id;
-            $("#srcLabel").html('Source(id:' + data.id + ';Lat:' + data.lat + ';Lon: ' + data.lon + ')');
+            setSource(data.id, data.lat, data.lon)
         }else{
-            if(trgtMarker!==null){
-                mymap.removeLayer(trgtMarker);
-            }
-            trgtMarker = new L.Marker([data.lat, data.lon],{color: 'green'});
-            mymap.addLayer(trgtMarker);
-            trgtMarker.bindPopup('Target')
-                .openPopup();
-            $("#trgtLabel").html('Target(id:' + data.id + ';Lat:' + data.lat + ';Lon: ' + data.lon + ')');
-            trgt = data.id;
+            setTarget(data.id, data.lat, data.lon)
         }
     });
 }

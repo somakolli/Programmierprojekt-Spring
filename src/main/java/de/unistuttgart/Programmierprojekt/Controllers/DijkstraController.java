@@ -29,7 +29,7 @@ public class DijkstraController {
     public Route path(@RequestParam int src, @RequestParam int trgt) throws Exception{
         if(!osmGraph.isGraphLoaded()) throw new Exception();
         int distance = dijkstra.shortestDistance(src, trgt);
-        double[][] path = osmGraph.nodePathToCoordinatePath(dijkstra.getPath(src, trgt));
+        double[][] path = osmGraph.idsToCoordinates(dijkstra.getPath(src, trgt));
         return new Route(path, distance);
     }
 }
