@@ -74,15 +74,7 @@ public class Dijkstra {
      */
     public Integer[] getPath(int sourceNode, int targetNode) {
         ArrayList<Integer> path = new ArrayList<>();
-        if(sourceNode!=this.srcNode){
-            shortestDistance(sourceNode, targetNode);
-        }
-        if(!visited[targetNode]){
-            shortestDistance(sourceNode, targetNode);
-        }
-        if(cost[targetNode]==Integer.MAX_VALUE){
-            return new Integer[0];
-        }
+        shortestDistance(sourceNode, targetNode);
         int currentNode = (int) targetNode;
         path.add(currentNode);
         while(currentNode!=sourceNode) {

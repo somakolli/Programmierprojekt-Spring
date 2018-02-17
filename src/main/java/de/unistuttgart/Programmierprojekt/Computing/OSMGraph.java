@@ -31,6 +31,10 @@ public class OSMGraph {
         this.template = template;
     }
 
+    public OSMGraph(){
+
+    }
+
     public void loadFromFile(String path) throws Exception{
         int messageRate = 1000000;
 
@@ -57,7 +61,7 @@ public class OSMGraph {
             String[] values = line.split(" ");
             lat[i] = Double.parseDouble(values[2]);
             lon[i] = Double.parseDouble(values[3]);
-            if(i%messageRate==0)
+            if(i%messageRate==0 && template!=null)
             template.convertAndSend("/topic/graphStatus", "Loading nodes: " + i + "/" + (noNodes-1));
         }
 
@@ -84,7 +88,7 @@ public class OSMGraph {
                 }
             }
             o++;
-            if(i%messageRate==0)
+            if(i%messageRate==0&&template!=null)
             template.convertAndSend("/topic/graphStatus", "Loading Edges: " + i + "/" + (noEdges-1));
         }
         offset[noNodes] = o;
@@ -94,6 +98,7 @@ public class OSMGraph {
         System.out.println("Graph Loaded!");
 
         //send web socket message
+        if(template!=null)
         template.convertAndSend("/topic/graphStatus", true);
     }
 
@@ -128,8 +133,8 @@ public class OSMGraph {
         return new Node(closestNode, this.lon[closestNode], this.lat[closestNode]);
     }
 
-    //turns an array with ids to a path with coordinates
-    public double[][] idsToCoordinates(Integer[] path) {
+    //turns an array with ids to an array with coordinates
+    public double[][] idsToCoordinates(Integer[] path) throws IndexOutOfBoundsException {
         double[][] coPath = new double[path.length][2];
         for (int i = 0; i < path.length; i++) {
             coPath[i] = getCoordinatesFromId(path[i]);
@@ -137,14 +142,13 @@ public class OSMGraph {
         return coPath;
     }
 
-    public double[] getCoordinatesFromId(int id){
+    public double[] getCoordinatesFromId(int id) throws IndexOutOfBoundsException{
+        if(id>noNodes) throw new IndexOutOfBoundsException();
         double[] coordinates = new double[2];
         coordinates[0] = getLon()[id];
         coordinates[1] = getLat()[id];
         return coordinates;
     }
-
-
 
     public int getNoNodes() {
         return noNodes;

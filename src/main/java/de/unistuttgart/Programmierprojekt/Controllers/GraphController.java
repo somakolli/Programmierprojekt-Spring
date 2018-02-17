@@ -27,6 +27,11 @@ public class GraphController {
 
     @RequestMapping("coordinates")
     public double[][] coordinatesFromId(@RequestParam Integer[] ids){
-        return osmGraph.idsToCoordinates(ids);
+        try {
+            return osmGraph.idsToCoordinates(ids);
+        }
+        catch (IndexOutOfBoundsException e){
+            return null;
+        }
     }
 }

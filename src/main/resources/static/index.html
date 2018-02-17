@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Programmierprojekt</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
@@ -14,6 +14,7 @@
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script src="/app.js"></script>
+    <script src="/loading.js"></script>
 </head>
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Please enable
@@ -25,14 +26,8 @@
 </div>
 <div id="main-content" class="container" hidden>
     <div class="col-md-6" id="distance-form">
-        <form class="form-inline">
-            <div class="form-group">
-                <input type="number" id="src" class="form-control" placeholder="Source Node">
-                <input type="number" id="trgt" class="form-control" placeholder="Target Node">
-                <button id="getDistance" class="btn btn-default" type="submit">Get Distance</button>
-            </div>
-        </form>
-        <form class="form-inline">
+
+        <form id="closestNodeForm" class="form-inline">
             <div class="form-group">
                 <input type="number" step="0.00000000000000001" id="lat" class="form-control" placeholder="Latitude">
                 <input type="number" step="0.00000000000000001" id="lon" class="form-control" placeholder="Longitude">
@@ -44,10 +39,15 @@
         <form id="sourceTargetForm">
             <input id="srcRadio" type="radio" name="gender" value="src" checked> <label id="srcLabel">Source</label><br>
             <input id="trgtRadio" type="radio" name="gender" value="trgt"> <label id="trgtLabel">Target</label><br>
-            <button id="drawRoute" class="btn btn-default" type="submit">Calculate Route</button>
+        </form>
+        <form class="form-inline">
+            <div class="form-group">
+                <input type="number" oninput="updateSource()" id="src" class="form-control" placeholder="Source Node">
+                <input type="number" oninput="updateTarget()" id="trgt" class="form-control" placeholder="Target Node">
+                <button id="drawRoute" class="btn btn-default" type="submit">Calculate Route</button>
+            </div>
         </form>
     </div>
-
 </div>
 </body>
 </html>
