@@ -1,3 +1,7 @@
+/**
+ * @author Tim-Julian Ehret, Julian Blumentröther, Sokol Makolli
+ */
+
 var src = null;
 var trgt = null;
 var mymap = null;

@@ -1,3 +1,7 @@
+/**
+ * @author Tim-Julian Ehret, Julian Blumentröther, Sokol Makolli
+ */
+
 //subscribe to get messages about the loading status of the graph
 function subscribeToGraphStatus() {
     var socket = new SockJS('/pp-websocket');

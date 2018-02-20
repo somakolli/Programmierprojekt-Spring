@@ -1,5 +1,9 @@
 package de.unistuttgart.Programmierprojekt.Models;
 
+/**
+ * @author Tim-Julian Ehret, Julian Blumentröther, Sokol Makolli
+ */
+
 public class Node {
     private int id;
     private double lon;
