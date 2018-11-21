@@ -21,6 +21,9 @@ public class OSMGraph {
     private int[] trgtNodes;
     private double[] lat;
     private double[] lon;
+    private int[] level;
+    private int[] edgeIdA;
+    private int[] edgeIdB;
     private int[] cost;
     private int[] offset;
 
@@ -41,7 +44,7 @@ public class OSMGraph {
         FileReader fr = new FileReader(path);
         BufferedReader br = new BufferedReader(fr);
         //ignore first 5 lines
-        for(int i = 0; i<5; i++){
+        for(int i = 0; i<10; i++){
             br.readLine();
         }
         //load number of nodes
@@ -51,9 +54,12 @@ public class OSMGraph {
         //initialize arrays
         lat = new double[noNodes];
         lon = new double[noNodes];
+        level = new int[noNodes];
         trgtNodes = new int[noEdges];
         cost = new int[noEdges];
         srcNodes = new int[noEdges];
+        edgeIdA = new int[noEdges];
+        edgeIdB = new int[noEdges];
         offset = new int[noNodes+1];
         //load node ids
         for(int i = 0; i<noNodes; i++){
@@ -76,6 +82,8 @@ public class OSMGraph {
             srcNodes[i] = Integer.parseInt(values[0]);
             trgtNodes[i] = Integer.parseInt(values[1]);
             cost[i] = Integer.parseInt(values[2]);
+            edgeIdA[i] = Integer.parseInt(values[5]);
+            edgeIdB[i] = Integer.parseInt(values[6]);
 
             //set offset
             if(i == 0){
@@ -188,5 +196,17 @@ public class OSMGraph {
 
     public double[] getLon() {
         return lon;
+    }
+
+    public int[] getEdgeIdA() {
+        return edgeIdA;
+    }
+
+    public int[] getEdgeIdB() {
+        return edgeIdB;
+    }
+
+    public int[] getLevel() {
+        return level;
     }
 }

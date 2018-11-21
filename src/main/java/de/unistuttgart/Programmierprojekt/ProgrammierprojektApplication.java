@@ -14,7 +14,7 @@ import org.springframework.stereotype.Controller;
 @SpringBootApplication
 @Controller
 public class ProgrammierprojektApplication {
-	private static final String graphPath = "src/main/resources/toy.fmi";
+	private static final String graphPath = "src/main/resources/saarland.ch";
 
 	public static void main(String[] args) throws Exception {
 		ConfigurableApplicationContext context = SpringApplication.run(ProgrammierprojektApplication.class, args);

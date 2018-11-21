@@ -10,9 +10,14 @@ import java.util.*;
 @Component
 public class Dijkstra {
     private OSMGraph graph;
-    private int[] cost;
+    private int[] costA;
+    Set<Integer> visitedListA;
+    private int[] costB;
+    Set<Integer> visitedListB;
+
     private boolean[] visited;
-    private int[] previousNode;
+    private int[] previousNodeA;
+    private int[] previousNodeB;
     private int srcNode;
 
     public Dijkstra(){
@@ -20,50 +25,57 @@ public class Dijkstra {
 
     public void init(OSMGraph graph) {
         this.graph =graph;
-        this.cost = new int[graph.getNoNodes()];
+        this.costA = new int[graph.getNoNodes()];
+        this.costB = new int[graph.getNoNodes()];
         this.visited = new boolean[graph.getNoNodes()];
-        this.previousNode = new int[graph.getNoNodes()+1];
+        this.previousNodeA = new int[graph.getNoNodes()+1];
+        this.previousNodeB = new int[graph.getNoNodes()+1];
         this.srcNode = -1;
+        visitedListA = new HashSet<>();
+        visitedListB = new HashSet<>();
     }
 
-    public void shortestDistance(int src){
-        try {
-            shortestDistance(src, -1);
-        }catch (IndexOutOfBoundsException ignored){
-
-        }
-    }
-
-    public int shortestDistance(int src, int trgt) {
-        if(trgt!=-1 && this.srcNode==src && visited[trgt]){
-            return cost[trgt];
-        }else{
-            this.srcNode = src;
-            for (int i = 0; i<cost.length; i++){
-                cost[i] = Integer.MAX_VALUE;
-            }
-            cost[src] = 0;
-        }
-        PriorityQueue<Integer> queue= new PriorityQueue<>(Comparator.comparingInt(o -> cost[o]));
+    public void shortestDistanceA(int src) {
+        PriorityQueue<Integer> queue= new PriorityQueue<>(Comparator.comparingInt(o -> costA[o]));
         queue.add(src);
         while (!queue.isEmpty()){
             int currentNode = queue.poll();
-            visited[currentNode] = true;
-            if(currentNode == trgt)return cost[trgt];
+            visitedListA.add(currentNode);
             for(int i = graph.getOffset()[currentNode];
                 i<graph.getOffset()[currentNode+1]; i++){
-                if(cost[graph.getTrgtNodes()[i]]>cost[currentNode]+graph.getCost()[i]){
-                    cost[graph.getTrgtNodes()[i]] = cost[currentNode]+graph.getCost()[i];
+                int target =  graph.getTrgtNodes()[i];
+                int targetLevel = graph.getLevel()[target];
+                int sourceLevel = graph.getLevel()[currentNode];
+                if(targetLevel > sourceLevel && costA[graph.getTrgtNodes()[i]]>costA[currentNode]+graph.getCost()[i]){
+                    costA[graph.getTrgtNodes()[i]] = costA[currentNode]+graph.getCost()[i];
                     queue.add(graph.getTrgtNodes()[i]);
-                    previousNode[graph.getTrgtNodes()[i]] = currentNode;
+                    previousNodeA[target] = currentNode;
                 }
             }
         }
-        return cost[trgt];
+    }
+    public void shortestDistanceB(int src) {
+        PriorityQueue<Integer> queue= new PriorityQueue<>(Comparator.comparingInt(o -> costB[o]));
+        queue.add(src);
+        while (!queue.isEmpty()){
+            int currentNode = queue.poll();
+            visitedListB.add(currentNode);
+            for(int i = graph.getOffset()[currentNode];
+                i<graph.getOffset()[currentNode+1]; i++){
+                int target =  graph.getTrgtNodes()[i];
+                int targetLevel = graph.getLevel()[target];
+                int sourceLevel = graph.getLevel()[currentNode];
+                if(targetLevel > sourceLevel && costB[graph.getTrgtNodes()[i]]>costB[currentNode]+graph.getCost()[i]){
+                    costB[graph.getTrgtNodes()[i]] = costB[currentNode]+graph.getCost()[i];
+                    queue.add(graph.getTrgtNodes()[i]);
+                    previousNodeB[target] = currentNode;
+                }
+            }
+        }
     }
 
     public int[] getCost() {
-        return cost;
+        return costA;
     }
 
     /**
@@ -74,13 +86,28 @@ public class Dijkstra {
      */
     public Integer[] getPath(int sourceNode, int targetNode) {
         ArrayList<Integer> path = new ArrayList<>();
-        shortestDistance(sourceNode, targetNode);
-        int currentNode = (int) targetNode;
-        path.add(currentNode);
-        while(currentNode!=sourceNode) {
-            path.add(previousNode[currentNode]);
-            currentNode = previousNode[currentNode];
+        shortestDistanceA(sourceNode);
+        shortestDistanceB(targetNode);
+        visitedListA.retainAll(visitedListB);
+        int minCost = Integer.MAX_VALUE;
+        int v = -1;
+        for(Integer i : visitedListA){
+            if(costA[i] + costB[i] < minCost)
+                minCost = costA[i] + costB[i];
+                v = i;
         }
-        return path.toArray(new Integer[path.size()]);
+        int currentNodeA = v;
+        path.add(currentNodeA);
+        while(currentNodeA!=sourceNode) {
+            path.add(previousNodeA[currentNodeA]);
+            currentNodeA = previousNodeA[currentNodeA];
+        }
+        int currentNodeB = v;
+        path.add(currentNodeB);
+        while(currentNodeB!=targetNode) {
+            path.add(previousNodeB[currentNodeB]);
+            currentNodeB = previousNodeB[currentNodeB];
+        }
+        return path.toArray(new Integer[0]);
     }
 }
